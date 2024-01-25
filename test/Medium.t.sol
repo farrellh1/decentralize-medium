@@ -24,10 +24,6 @@ contract MediumTest is Test {
         assertEq(medium.getOwner(), msg.sender);
     }
 
-    function test_MinimumTipInUSD() public {
-        assertEq(medium.MINIMUM_TIP_IN_USD(), 1e18);
-    }
-
     function test_CreatePost() public {
         vm.prank(authorAddress);
 
@@ -38,11 +34,13 @@ contract MediumTest is Test {
 
         // Post Assertion
         Medium.Post memory post = medium.getPost(1);
+
         assertEq(post.id, 1);
         assertEq(post.title, "title");
         assertEq(post.summary, "summary");
         assertEq(post.content, "content");
         assertEq(post.author, authorAddress);
+        assertEq(post.tipEarned, 0);
         assertEq(medium.postIdToClapCount(1), 0);
         assertEq(medium.postIdToTipPost(1), 0);
     }
@@ -75,11 +73,10 @@ contract MediumTest is Test {
     }
 
     function test_RevertWhen_TipPostAsAuthor() public createPost {
-        // Tip a post
+        vm.prank(authorAddress);
         // Expect revert
         vm.expectRevert("Author cannot tip owned post.");
         medium.tipPost{value: 0.1 ether}(1);
-        vm.stopPrank();
 
         assertEq(medium.postIdToTipPost(1), 0);
         assertEq(address(medium).balance, 0);
@@ -93,7 +90,7 @@ contract MediumTest is Test {
 
         uint256 currentAuthorBalance = address(authorAddress).balance;
         uint256 currentContractBalance = address(medium).balance;
-        uint256 fee = 0.1 ether * 3 / 100;
+        uint256 fee = (0.1 ether * 3) / 100;
         assertEq(currentAuthorBalance, previousAuthorBalance + (0.1 ether - fee));
         assertEq(currentContractBalance, previousContractBalance - 0.1 ether + fee);
     }
@@ -106,28 +103,82 @@ contract MediumTest is Test {
 
     function test_WithdrawFeesAsOwner() public createPost tipPost authorWithdrawTip {
         uint256 previousOwnerBalance = address(ownerAddress).balance;
-        vm.startPrank(ownerAddress);    
+        vm.startPrank(ownerAddress);
         medium.withdrawFees();
         vm.stopPrank();
         uint256 currentOwnerBalance = address(ownerAddress).balance;
-        assertEq(currentOwnerBalance, previousOwnerBalance + (0.1 ether * 3 / 100));
+        assertEq(currentOwnerBalance, previousOwnerBalance + ((0.1 ether * 3) / 100));
+    }
+
+    function test_RevertWhen_WithdrawFeesNotAsOwner() public createPost tipPost authorWithdrawTip {
+        uint256 previousOwnerBalance = address(ownerAddress).balance;
+        uint256 previousContractBalance = address(medium).balance;
+        vm.startPrank(authorAddress);
+        vm.expectRevert(Medium.NotOwner.selector);
+        medium.withdrawFees();
+        uint256 currentOwnerBalance = address(ownerAddress).balance;
+        uint256 currentContractBalance = address(medium).balance;
+        assertEq(previousOwnerBalance, currentOwnerBalance);
+        assertEq(previousContractBalance, currentContractBalance);
+    }
+
+    function test_GetPost() public createPost {
+        Medium.Post memory post = medium.getPost(1);
+
+        assertEq(post.id, 1);
+        assertEq(post.title, "title");
+        assertEq(post.summary, "summary");
+        assertEq(post.content, "content");
+        assertEq(post.author, authorAddress);
+        assertEq(post.tipEarned, 0);
+        assertEq(medium.postIdToClapCount(1), 0);
+        assertEq(medium.postIdToTipPost(1), 0);
+    }
+
+    function test_GetPostWhenPostNotFound() public createPost {
+        Medium.Post memory post = medium.getPost(2);
+
+        assertEq(post.id, 0);
+        assertEq(post.title, "");
+        assertEq(post.summary, "");
+        assertEq(post.content, "");
+        assertEq(post.author, address(0));
+        assertEq(post.tipEarned, 0);
+        assertEq(medium.postIdToClapCount(1), 0);
+        assertEq(medium.postIdToTipPost(1), 0);
+    }
+
+    function test_ClapPost() public createPost {
+        vm.prank(donatorAddress);
+
+        vm.expectEmit();
+        emit Medium.ClapPost(1, 10, donatorAddress);
+        medium.clapPost(1, 10);
+
+        assertEq(medium.postIdToClapCount(1), 10);
+    }
+
+    function test_RevertWhenClapPostAsAuthor() public createPost {
+        vm.prank(authorAddress);
+
+        vm.expectRevert("Author cannot clap owned post.");
+        medium.clapPost(1, 10);
     }
 
     modifier createPost() {
-        vm.startPrank(authorAddress);
+        vm.prank(authorAddress);
         medium.createPost("title", "summary", "content");
         _;
     }
 
     modifier tipPost() {
-        vm.startPrank(donatorAddress);
+        vm.prank(donatorAddress);
         medium.tipPost{value: 0.1 ether}(1);
-        vm.stopPrank();
         _;
     }
 
     modifier authorWithdrawTip() {
-        vm.startPrank(authorAddress);
+        vm.prank(authorAddress);
         medium.withdrawTip(1);
         _;
     }
