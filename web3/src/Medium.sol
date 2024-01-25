@@ -31,6 +31,12 @@ contract Medium {
         uint256 tipEarned;
     }
 
+    struct Comment {
+        uint256 id;
+        address commenterAddress;
+        string content;
+    }
+
     // PostId to Post
     mapping(uint256 id => Post) public posts;
 
@@ -40,8 +46,14 @@ contract Medium {
     // PostId to TipPost
     mapping(uint256 postId => uint256 tipAmount) public postIdToTipPost;
 
+    // PostId to TipPost
+    mapping(uint256 postId => Comment[] comments) public postIdToComments;
+
     // PostCount
     uint256 public postCount;
+
+    // CommentId
+    uint256 private commentId;
 
     // Events
     event PostCreated(
@@ -62,11 +74,18 @@ contract Medium {
         uint8 clapCount,
         address clapperAddress
     );
+    event CommentPost(
+        uint256 indexed postId,
+        uint256 commentId,
+        address commenterAddress,
+        string content
+    );
 
     // Custom Errors
     error NotAuthor();
     error NotOwner();
     error TipAmountInsufficient();
+    error PostNotFound();
 
     // Constructor
     constructor(address _priceFeed) {
@@ -98,6 +117,28 @@ contract Medium {
 
         // Emit PostCreated event
         emit PostCreated(postCount, msg.sender, _title, _summary);
+    }
+
+    // Comment a post
+    function commentPost(
+        uint256 _postId,
+        string memory _content
+    ) public {
+        // Check if post exist
+        if (posts[_postId] != bytes(0)) revert PostNotFound();
+
+        // Increment commentId
+        commentId++;
+
+        // push comment to postIdToComments
+        postIdToComments[_postId].push(Comment({
+            id: commentId,
+            commenterAddress: msg.sender,
+            content: _content
+        }));
+
+        // Emit CommentPost event
+        emit CommentPost(_postId, commentId, msg.sender);
     }
 
     // Tip Post
