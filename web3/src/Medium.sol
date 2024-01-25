@@ -74,7 +74,7 @@ contract Medium {
         uint8 clapCount,
         address clapperAddress
     );
-    event CommentPost(
+    event CommentCreated(
         uint256 indexed postId,
         uint256 commentId,
         address commenterAddress,
@@ -120,12 +120,12 @@ contract Medium {
     }
 
     // Comment a post
-    function commentPost(
+    function createComment(
         uint256 _postId,
         string memory _content
     ) public {
         // Check if post exist
-        if (posts[_postId] != bytes(0)) revert PostNotFound();
+        if (posts[_postId].id == 0) revert PostNotFound();
 
         // Increment commentId
         commentId++;
@@ -138,7 +138,7 @@ contract Medium {
         }));
 
         // Emit CommentPost event
-        emit CommentPost(_postId, commentId, msg.sender);
+        emit CommentCreated(_postId, commentId, msg.sender, _content);
     }
 
     // Tip Post
@@ -198,6 +198,12 @@ contract Medium {
         return posts[_id];
     }
 
+    // Get Comments
+    function getComments(uint256 _postId) public view returns (Comment[] memory) {
+        return postIdToComments[_postId];
+    }
+
+    // Clap a posts
     function clapPost(uint256 _id, uint8 _clapCount) public {
         // Revert if msg.sender is the Author
         require(
