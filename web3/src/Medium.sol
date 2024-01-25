@@ -4,7 +4,10 @@ pragma solidity ^0.8.18;
 
 import "./PriceConverter.sol";
 
-// Decentralize Medium
+/**
+ * @title Medium
+ * @dev Decentralized content publishing platform with tipping and comments
+ */
 contract Medium {
     // Use PriceCoverter library to convert CryptoCurrency to USD
     using PriceConverter for uint256;
@@ -31,6 +34,7 @@ contract Medium {
         uint256 tipEarned;
     }
 
+    // Comment struct
     struct Comment {
         uint256 id;
         address commenterAddress;
@@ -87,7 +91,10 @@ contract Medium {
     error TipAmountInsufficient();
     error PostNotFound();
 
-    // Constructor
+    /**
+     * @dev Initializes the contract with the price feed address and sets the contract owner
+     * @param _priceFeed The address of the price feed from Chainlink
+     */
     constructor(address _priceFeed) {
         // Set pricefeed address based on network use
         priceFeed = AggregatorV3Interface(_priceFeed);
@@ -96,7 +103,12 @@ contract Medium {
         owner = msg.sender;
     }
 
-    // Create Post
+    /**
+     * @dev Allows the author to create a new post
+     * @param _title The title of the post
+     * @param _summary The summary of the post
+     * @param _content The content of the post
+     */
     function createPost(
         string memory _title,
         string memory _summary,
@@ -119,7 +131,11 @@ contract Medium {
         emit PostCreated(postCount, msg.sender, _title, _summary);
     }
 
-    // Comment a post
+    /**
+     * @dev Allows users to comment on a post
+     * @param _postId The ID of the post to comment on
+     * @param _content The content of the comment
+     */
     function createComment(
         uint256 _postId,
         string memory _content
@@ -141,7 +157,10 @@ contract Medium {
         emit CommentCreated(_postId, commentId, msg.sender, _content);
     }
 
-    // Tip Post
+    /**
+     * @dev Allows users to tip a post
+     * @param _id The ID of the post to tip
+     */
     function tipPost(uint256 _id) public payable {
         // Author can't tip owned Post
         require(
@@ -164,7 +183,10 @@ contract Medium {
         emit TipPost(_id, msg.sender, msg.value);
     }
 
-    // Withdraw Tip
+    /**
+     * @dev Allows the author to withdraw the tip for a specific post
+     * @param _id The ID of the post
+     */
     function withdrawTip(
         uint256 _id
     ) public payable onlyAuthor(posts[_id].author) {
@@ -193,17 +215,29 @@ contract Medium {
         emit WithdrawTip(_id, posts[_id].author, tipEarned, fee);
     }
 
-    // Get Post
+    /**
+     * @dev Retrieves the details of a specific post
+     * @param _id The ID of the post
+     * @return The details of the post
+     */
     function getPost(uint256 _id) public view returns (Post memory) {
         return posts[_id];
     }
 
-    // Get Comments
+    /**
+     * @dev Retrieves the comments for a specific post
+     * @param _postId The ID of the post
+     * @return The comments for the post
+     */
     function getComments(uint256 _postId) public view returns (Comment[] memory) {
         return postIdToComments[_postId];
     }
 
-    // Clap a posts
+    /**
+     * @dev Allows users to clap for a specific post
+     * @param _id The ID of the post
+     * @param _clapCount The number of claps to add
+     */
     function clapPost(uint256 _id, uint8 _clapCount) public {
         // Revert if msg.sender is the Author
         require(
@@ -218,24 +252,34 @@ contract Medium {
         emit ClapPost(_id, _clapCount, msg.sender);
     }
 
-    // Get Contract Owner
+    /**
+     * @dev Retrieves the address of the contract owner
+     * @return The address of the contract owner
+     */
     function getOwner() public view returns (address) {
         return owner;
     }
 
-    // Withdraw feesCollected to owner
+    /**
+     * @dev Allows the contract owner to withdraw the accumulated fees
+     */
     function withdrawFees() public payable onlyOwner {
         bool success = payable(owner).send(feesCollected);
         require(success, "Failed to send fees to owner.");
     }
 
-    // Modifier for onlyAuthor
+    /**
+     * @dev Ensures that only the author of a post can access certain functions
+     * @param _author The address of the post author
+     */
     modifier onlyAuthor(address _author) {
         if (msg.sender != _author) revert NotAuthor();
         _;
     }
 
-    // Modifier for onlyOwner
+    /**
+     * @dev Ensures that only the contract owner can access certain functions
+     */
     modifier onlyOwner() {
         if (msg.sender != owner) revert NotOwner();
         _;
