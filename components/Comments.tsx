@@ -38,7 +38,7 @@ const Comments = ({ comments, postId }: { comments: any[], postId: number }) => 
   return (
     <div className="my-[20px]">
       <div className="font-bold text-xl">Comments</div>
-      <div className="my-[40px]">
+      <div className="flex flex-col my-[8px] gap-[16px]">
         {
          comments?.length == 0 ? (
           <div>No comments yet</div>
