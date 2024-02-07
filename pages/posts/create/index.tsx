@@ -10,23 +10,19 @@ import {
   FormItem,
   FormLabel,
   FormMessage,
-} from "../../@/components/ui/form";
-import { Button } from "../../@/components/ui/button";
-import { Textarea } from "../../@/components/ui/textarea";
-import Tiptap from "../../components/Tiptap";
-import {
-  useContract,
-  useContractWrite,
-} from "@thirdweb-dev/react";
-import { useStorageUpload } from "@thirdweb-dev/react";
+} from "../../../@/components/ui/form";
+import { Button } from "../../../@/components/ui/button";
+import { Textarea } from "../../../@/components/ui/textarea";
+import Tiptap from "../../../components/Tiptap";
+import { useAddress, useContract, useContractWrite } from "@thirdweb-dev/react";
 import { useRouter } from "next/router";
 
 const Create = () => {
+  const userAddress = useAddress();
   const router = useRouter();
   const { contract } = useContract(
     "0x32be2bdA03fdffd9C285dAa41051d2De4924815f"
   );
-  const { mutateAsync: upload, isLoading: uploadLoading } = useStorageUpload();
   const { mutateAsync: createPost, isLoading: createPostLoading } =
     useContractWrite(contract, "createPost");
   const formSchema = z.object({
@@ -57,15 +53,18 @@ const Create = () => {
   };
 
   const handleOnSubmit = async (values: z.infer<typeof formSchema>) => {
+    if (userAddress == null) {
+      alert("Please connect your wallet");
+      return;
+    }
+
     try {
-      const uris = await upload({ data: [values.content]});
       await createPost({
-        args: [values.title, values.summary, uris[0]],
+        args: [values.title, values.summary, values.content],
       });
       router.push("/");
     } catch (error) {
-      form.setError("content", { message: "Publish failed" });
-      console.log(error);
+      alert("Publish error");
       return;
     }
   };
@@ -138,7 +137,7 @@ const Create = () => {
           className="bg-black text-white w-full h-[50px] mt-5 rounded-md"
           type="submit"
         >
-          {uploadLoading || createPostLoading ? "Publishing..." : "Publish"}
+          {createPostLoading ? "Publishing..." : "Publish"}
         </Button>
       </Form>
     </form>

@@ -2,6 +2,7 @@ import { useContractRead } from "@thirdweb-dev/react";
 import Link from "next/link";
 import { FaEthereum } from "react-icons/fa6";
 import Divider from "./Divider";
+import { BigNumber, utils } from "ethers";
 
 type Props = {
   event: any;
@@ -20,7 +21,8 @@ const PostCard = ({ event, contract }: Props) => {
         <div className="mb-4 font-bold text-3xl">{event.data.title}</div>
         <div className="mb-4 text-ellipsis">{event.data.summary}</div>
         <div className="flex flex-row text-green-400">
-          Tip Earned {isLoading ? "..." : Number(post.tipEarned)} ETH
+          Tip Earned{" "}
+          {isLoading ? "..." : utils.formatEther(BigNumber.from(post.tipEarned.toString()))} ETH
           <span className="ml-2 self-center">
             <FaEthereum className="text-purple-700"></FaEthereum>
           </span>

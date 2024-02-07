@@ -8,8 +8,9 @@ import { useRouter } from "next/router";
 import { FaComment, FaEthereum, FaHandsClapping, FaM } from "react-icons/fa6";
 import Divider from "../../components/Divider";
 import TipModal from "../../components/TipModal";
-import { utils } from "ethers";
+import { BigNumber, utils } from "ethers";
 import Content from "../../components/Content";
+import Comments from "../../components/Comments";
 
 const PostDetail = () => {
   const router = useRouter();
@@ -20,9 +21,11 @@ const PostDetail = () => {
   const { data: post } = useContractRead(contract, "getPost", [
     router.query.id,
   ]);
-  const { data: comments } = useContractRead(contract, "getComments", [
-    router.query.id,
-  ]);
+  const { data: comments, isLoading } = useContractRead(
+    contract,
+    "getComments",
+    [router.query.id]
+  );
   const { data: clapCount } = useContractRead(contract, "postIdToClapCount", [
     router.query.id,
   ]);
@@ -40,7 +43,7 @@ const PostDetail = () => {
 
     try {
       clapPost({
-        args: [router.query.id, 68],
+        args: [router.query.id, 1],
       });
     } catch (error) {
       alert(error);
@@ -65,8 +68,8 @@ const PostDetail = () => {
           ></FaHandsClapping>
           <div>{clapCount ?? 0}</div>
         </div>
-        <div className="flex flex-row mx-2">
-          <FaComment className="text-xl mr-3"></FaComment>
+        <div className="flex flex-row mx-2 cursor-pointer">
+          <FaComment className="text-xl mr-3" onClick={() => router.push("#comments")}></FaComment>
           <div>{comments?.length ?? 0}</div>
         </div>
         <div className="flex flex-row mx-2">
@@ -74,7 +77,9 @@ const PostDetail = () => {
             <span className="self-center mr-2">
               <FaEthereum></FaEthereum>
             </span>
-            {post?.tipEarned ? utils.formatEther(Number(post?.tipEarned)) : 0}{" "}
+            {post?.tipEarned
+              ? utils.formatEther(BigNumber.from(post?.tipEarned.toString()))
+              : 0}{" "}
             ETH
           </div>
         </div>
@@ -82,6 +87,15 @@ const PostDetail = () => {
       </div>
       <Divider />
       <Content content={post?.content} />
+      <div className="my-[60px]"></div>
+      <Divider />
+      <div id="comments">
+        {isLoading ? (
+          <div>Loading...</div>
+        ) : (
+          <Comments comments={comments} postId={Number(router.query.id)} />
+        )}
+      </div>
     </div>
   );
 };
