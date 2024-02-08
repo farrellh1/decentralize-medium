@@ -21,7 +21,7 @@ const Create = () => {
   const userAddress = useAddress();
   const router = useRouter();
   const { contract } = useContract(
-    "0x32be2bdA03fdffd9C285dAa41051d2De4924815f"
+    process.env.NEXT_PUBLIC_CONTRACT_ADDRESS
   );
   const { mutateAsync: createPost, isLoading: createPostLoading } =
     useContractWrite(contract, "createPost");

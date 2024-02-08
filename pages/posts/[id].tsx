@@ -15,7 +15,7 @@ import Comments from "../../components/Comments";
 const PostDetail = () => {
   const router = useRouter();
   const { contract } = useContract(
-    "0x32be2bdA03fdffd9C285dAa41051d2De4924815f"
+    process.env.NEXT_PUBLIC_CONTRACT_ADDRESS
   );
   const userAddress = useAddress();
   const { data: post } = useContractRead(contract, "getPost", [

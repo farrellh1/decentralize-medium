@@ -35,6 +35,7 @@ const Tiptap = ({ onChange }: { onChange: (richText: string) => void }) => {
       },
     },
     onUpdate({ editor }) {
+      console.log(editor.getHTML());
       onChange(editor.getHTML());
     },
   });

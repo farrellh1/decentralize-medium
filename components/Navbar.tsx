@@ -12,7 +12,7 @@ import { FaRegPenToSquare } from "react-icons/fa6";
 const Navbar: NextPage = () => {
   const userAddress = useAddress();
   const { contract } = useContract(
-    "0x32be2bdA03fdffd9C285dAa41051d2De4924815f"
+    process.env.NEXT_PUBLIC_CONTRACT_ADDRESS
   );
   const { data: owner, isLoading: ownerLoading } = useContractRead(
     contract,

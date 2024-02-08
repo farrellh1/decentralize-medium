@@ -4,18 +4,18 @@ import { NextPage } from "next";
 import PostCard from "./PostCard";
 
 const Posts: NextPage = () => {
-  const { contract } = useContract(
-    "0x32be2bdA03fdffd9C285dAa41051d2De4924815f"
-  );
+  const { contract } = useContract(process.env.NEXT_PUBLIC_CONTRACT_ADDRESS);
   const { data: events } = useContractEvents(contract, "PostCreated");
 
   return (
     <div className="w-full h-full flex flex-col p-[70px]">
-      {events?.map((event) => {
-        return (
-          <PostCard event={event} contract={contract}/>
-        );
-      })}
+      {events?.length === 0 ? (
+        <div>No posts yet.</div>
+      ) : (
+        events?.map((event) => {
+          return <PostCard event={event} contract={contract} />;
+        })
+      )}
     </div>
   );
 };

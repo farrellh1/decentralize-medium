@@ -10,7 +10,7 @@ import { useState } from "react";
 const TipModal = ({ post }: { post: any }) => {
   const userAddress = useAddress();
   const { contract } = useContract(
-    "0x32be2bdA03fdffd9C285dAa41051d2De4924815f"
+    process.env.NEXT_PUBLIC_CONTRACT_ADDRESS
   );
   const { data: withdrawableTip } = useContractRead(
     contract,
