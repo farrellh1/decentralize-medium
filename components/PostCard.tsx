@@ -1,7 +1,6 @@
 import { useContractRead } from "@thirdweb-dev/react";
 import Link from "next/link";
 import { FaEthereum } from "react-icons/fa6";
-import Divider from "./Divider";
 import { BigNumber, utils } from "ethers";
 
 type Props = {

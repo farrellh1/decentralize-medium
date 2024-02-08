@@ -35,26 +35,26 @@ const Navbar: NextPage = () => {
   };
 
   return (
-    <nav className="w-full flex flex-row md:justify-between py-2 px-6 shadow-md">
+    <nav className="w-full flex flex-row md:justify-between md:py-2 md:px-6 shadow-md">
       <Link href={"/"} className="text-xl self-center hidden md:block">
         <div>Decentralize Medium</div>
       </Link>
 
-      <div className="flex flex-row w-full justify-between md:justify-end">
+      <div className="flex flex-row w-full justify-between md:justify-end ">
         <Link
           href="/posts/create"
-          className="mr-3 px-3 items-center self-center"
+          className="md:mr-3 pl-1 md:px-3 items-center self-center hover:bg-gray-100"
         >
           <div className="flex flex-row items-center">
-            <div className="mr-3">Write a post</div>
-            <FaRegPenToSquare />
+            <div className="hidden md:block md:text-base mr-[4px] md:mr-2">Write a post</div>
+            <FaRegPenToSquare className="ml-3" />
           </div>
         </Link>
-        <ConnectWallet theme={"light"} />
+        <ConnectWallet theme={"light"} className="!min-w-[80px] !h-[40px] md:!w-fit md:!h-fit !text-[8px] !self-center !p-0 !my-2" />
         {owner == userAddress && !ownerLoading ? (
           <button
             onClick={() => handleWithdrawTipFees()}
-            className="ml-3 bg-emerald-500 text-white active:bg-emerald-600 font-bold uppercase text-sm px-6 py-3 rounded shadow hover:shadow-lg outline-none focus:outline-none mr-1 mb-1 ease-linear transition-all duration-150"
+            className="md:ml-3 w-[80px] h-[40px] md:w-fit md:h-fit self-center bg-emerald-500 text-white active:bg-emerald-600 font-bold uppercase text-xs md:text-sm mr-1 md:px-6 md:py-3 rounded shadow hover:shadow-lg outline-none focus:outline-none ease-linear transition-all duration-150"
           >
             {withdrawLoading ? "Withdrawing..." : "Withdraw Tip Fees"}
           </button>

@@ -1,4 +1,3 @@
-import { useContractRead } from "@thirdweb-dev/react";
 import { useContract, useContractEvents } from "@thirdweb-dev/react-core";
 import { NextPage } from "next";
 import PostCard from "./PostCard";
@@ -8,7 +7,7 @@ const Posts: NextPage = () => {
   const { data: events } = useContractEvents(contract, "PostCreated");
 
   return (
-    <div className="w-full h-full flex flex-col p-[40px] md:p-[70px]">
+    <div className="w-full h-full flex flex-col p-[0px] md:px-[70px] md:py-[20px]">
       {events?.length === 0 ? (
         <div>No posts yet.</div>
       ) : (
