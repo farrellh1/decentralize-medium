@@ -12,8 +12,8 @@ const Posts: NextPage = () => {
       {events?.length === 0 ? (
         <div>No posts yet.</div>
       ) : (
-        events?.map((event) => {
-          return <PostCard event={event} contract={contract} />;
+        events?.map((event, index) => {
+          return <PostCard key={index} event={event} contract={contract} />;
         })
       )}
     </div>

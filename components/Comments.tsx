@@ -43,8 +43,8 @@ const Comments = ({ comments, postId }: { comments: any[], postId: number }) => 
          comments?.length == 0 ? (
           <div>No comments yet</div>
         ) : (
-          comments.map((comment: any) => {
-            return <CommentCard comment={comment} />;
+          comments.map((comment: any, index) => {
+            return <CommentCard key={index} comment={comment} />;
           })
         )}
         <div className="mt-[70px]">
