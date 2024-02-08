@@ -73,9 +73,9 @@ const TipModal = ({ post }: { post: any }) => {
   };
 
   return (
-    <div>
+    <>
       <button
-        className="bg-emerald-500 h-[40px] text-white active:bg-emerald-600 font-bold uppercase text-sm px-[8px] rounded shadow hover:shadow-lg outline-none focus:outline-none mr-1 mb-1 ease-linear transition-all duration-150"
+        className="bg-emerald-500 w-[120px] md:w-fit md:h-[40px] text-white active:bg-emerald-600 font-bold uppercase text-xs md:text-sm px-[8px] rounded shadow hover:shadow-lg outline-none focus:outline-none ease-linear transition-all duration-150"
         type="button"
         onClick={() => setShowModal(true)}
       >
@@ -185,7 +185,7 @@ const TipModal = ({ post }: { post: any }) => {
           <div className="opacity-25 fixed inset-0 z-40 bg-black"></div>
         </>
       ) : null}
-    </div>
+    </>
   );
 };
 

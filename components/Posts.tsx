@@ -8,7 +8,7 @@ const Posts: NextPage = () => {
   const { data: events } = useContractEvents(contract, "PostCreated");
 
   return (
-    <div className="w-full h-full flex flex-col p-[70px]">
+    <div className="w-full h-full flex flex-col p-[40px] md:p-[70px]">
       {events?.length === 0 ? (
         <div>No posts yet.</div>
       ) : (

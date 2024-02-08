@@ -35,12 +35,12 @@ const Navbar: NextPage = () => {
   };
 
   return (
-    <nav className="w-full flex flex-row justify-between py-2 px-6 shadow-md">
-      <Link href={"/"} className="text-xl self-center">
+    <nav className="w-full flex flex-row md:justify-between py-2 px-6 shadow-md">
+      <Link href={"/"} className="text-xl self-center hidden md:block">
         <div>Decentralize Medium</div>
       </Link>
 
-      <div className="flex flex-row justify-between">
+      <div className="flex flex-row w-full justify-between md:justify-end">
         <Link
           href="/posts/create"
           className="mr-3 px-3 items-center self-center"

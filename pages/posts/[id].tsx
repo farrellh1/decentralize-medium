@@ -52,15 +52,15 @@ const PostDetail = () => {
 
   return (
     <div className="max-w-[936px] mt-10 mx-auto">
-      <div className="text-3xl font-bold py-[16px]">{post?.title}</div>
-      <div className="flex flex-row w-full items-center py-[16px] pb-[24px]">
-        <FaM className="text-sm text-white bg-black rounded-full w-[40px] h-[40px] p-2 self-center"></FaM>
-        <div className="text-sm self-center ml-3">
+      <div className="text-xl md:text-3xl font-bold py-[16px]">{post?.title}</div>
+      <div className="flex flex-col w-full items-center md:flex-row py-[8px] pb-[16px] md:py-[16px] md:pb-[24px]">
+        <FaM className="text-sm text-white bg-black rounded-full w-[20px] h-[20px] md:w-[40px] md:h-[40px] p-1 md:p-2 self-center"></FaM>
+        <div className="text-xs md:text-sm self-center ml-1 md:ml-3">
           Author address: {post?.author}
         </div>
       </div>
       <Divider />
-      <div className="flex flex-row mx-6 justify-between items-center py-[12px]">
+      <div className="flex flex-row mx-3 md:mx-6 justify-between items-center py-[8px] md:py-[12px]">
         <div className="flex flex-row mx-2">
           <FaHandsClapping
             className="text-xl mr-3 cursor-pointer"

@@ -71,7 +71,7 @@ const Create = () => {
 
   return (
     <form
-      className="h-full m-[80px] flex flex-col"
+      className="h-full m-[40px] md:m-[80px] flex flex-col"
       onSubmit={form.handleSubmit(handleOnSubmit)}
     >
       <Form {...form}>

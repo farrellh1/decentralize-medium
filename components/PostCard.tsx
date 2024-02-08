@@ -16,11 +16,11 @@ const PostCard = ({ event, contract }: Props) => {
 
   return (
     <Link href={`./posts/${event.data.id}`}>
-      <div className="flex flex-col gap-[8px] w-full p-6 hover:bg-gray-100 rounded-[8px]">
-        <div className="text-sm">Author address: {event.data.author}</div>
-        <div className="font-bold text-3xl">{event.data.title}</div>
-        <div className="text-ellipsis">{event.data.summary}</div>
-        <div className="text-sm flex flex-row">
+      <div className="flex flex-col gap-[8px] w-full p-[20px] md:p-6 hover:bg-gray-100 rounded-[8px]">
+        <div className="text-xs truncate md:text-sm">Author address: {event.data.author}</div>
+        <div className="font-bold text-xl md:text-3xl">{event.data.title}</div>
+        <div className="text-xs md:text-base">{event.data.summary}</div>
+        <div className="text-xs md:text-base flex flex-row">
           Tip earned{" "}
           {isLoading ? (
             "..."
