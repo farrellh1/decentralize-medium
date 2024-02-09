@@ -50,7 +50,7 @@ const Navbar: NextPage = () => {
             <FaRegPenToSquare className="ml-3" />
           </div>
         </Link>
-        <ConnectWallet theme={"light"} className="!min-w-[80px] !h-[40px] md:!w-fit md:!h-fit !text-[8px] !self-center !p-0 !my-2" />
+        <ConnectWallet theme={"light"} className="!min-w-[80px] !h-[40px] md:!w-[120px] md:!h-[40px] !text-xs !self-center !p-2 md:!p-0 !my-2" />
         {owner == userAddress && !ownerLoading ? (
           <button
             onClick={() => handleWithdrawTipFees()}
